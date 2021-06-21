@@ -18,6 +18,8 @@ public class MainManager : MonoBehaviour
     
     private bool m_GameOver = false;
 
+    public Text bestScoreText;
+    private int bestScore = 0;
     
     // Start is called before the first frame update
     void Start()
@@ -36,6 +38,9 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+        MenuHandler.Instance.LoadBestScoreAndName();
+        bestScoreText.text = "Best Score: " + MenuHandler.Instance.bestName + " :" + MenuHandler.Instance.bestScore;
+        bestScore = MenuHandler.Instance.bestScore;
     }
 
     private void Update()
@@ -66,11 +71,24 @@ public class MainManager : MonoBehaviour
     {
         m_Points += point;
         ScoreText.text = $"Score : {m_Points}";
+        if (m_Points > bestScore)
+        {
+            NewBestScore(m_Points, MenuHandler.Instance.currentName);
+            bestScoreText.text = "Best Score: " + MenuHandler.Instance.bestName + " :" + MenuHandler.Instance.bestScore;
+        }
     }
 
     public void GameOver()
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        MenuHandler.Instance.SaveBestScoreAndName();
+    }
+
+    public void NewBestScore(int bestScore, string bestName)
+    {
+        // add code here to handle when a color is selected
+        MenuHandler.Instance.bestScore = bestScore;
+        MenuHandler.Instance.bestName = bestName;
     }
 }
